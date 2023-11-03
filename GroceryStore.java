@@ -31,7 +31,7 @@ public class GroceryStore {
         return null;
     }
 
-    public void changePrice(ProductSupply productSupply, double price) {
+    public void changePrice(int productSupplyId, double price) {
         //8) change price, you may have to go into the ProductSupply class and add a setPrice method.
     }
 
