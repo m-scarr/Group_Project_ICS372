@@ -4,6 +4,30 @@ public class ProductList {
     private ArrayList<Product> content = new ArrayList<Product>();
     public ProductList() {}
 
+    private ProductList(ArrayList<Product> content) {
+        this.content = content;
+    }
+
+    public static ProductList load(String data) {
+        String[] products = data.substring(1, data.length() - 1).split(",");
+        int productId;
+        int quantity;
+        ArrayList<Product> newContent = new ArrayList<Product>();
+        for (int i = 0; i < products.length; i++) {
+            productId = Integer.parseInt(products[i].split(" x")[0]);
+            quantity = Integer.parseInt(products[i].split(" x")[1]);
+            newContent.add(new Product(GroceryStore.getInstance().findProductSupplyById(productId), quantity));
+        }
+        return new ProductList(newContent);
+    }
+
+    public String getSaveString() {
+        String saveString = "[";
+        for (int i = 0; i < content.size();i++) {
+            saveString += content.get(i).productSupply.id + " x"+content.get(i).getQuantity()+(i < content.size() - 1? "," : "]");
+        }
+        return saveString;
+    }
     public void add(ProductSupply productSupply, int quantity) {
         for (int i = 0; i < content.size();i++) {
             if (productSupply.id == content.get(i).productSupply.id) {
@@ -31,6 +55,10 @@ public class ProductList {
             }
         }
         return 0;
+    }
+
+    public Product get(int i) {
+        return content.get(i);
     }
 
     public double getTotal() {

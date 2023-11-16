@@ -22,6 +22,45 @@ public class Transaction {
         this.member.addTransaction(this);
     }
 
+    private Transaction(int id, String productList, int memberId, double total, String date) {
+        this.id = id;
+        this.productList = ProductList.load(productList);
+        if (memberId != -1) {
+            this.member = GroceryStore.getInstance().findMemberById(memberId);
+            this.member.addTransaction(this);
+        }
+        this.total = total;
+        this.date = new Date(Date.parse(date));
+        GroceryStore.getInstance().loadTransaction(this);
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getSaveString() {
+        String saveString = "";
+        saveString += this.id + "|";
+        saveString += this.productList.getSaveString() + "|";
+        saveString += (this.member == null ? "-1" : this.member.id) + "|";
+        saveString += this.total + "|";
+        saveString += this.date;
+        return saveString;
+    }
+
+    public static Transaction load(String data) {
+        String[] fields = data.split("\\|");
+
+        if (fields.length == 5) {
+            try {
+                return new Transaction(Integer.parseInt(fields[0]),fields[1], Integer.parseInt(fields[2]), Double.parseDouble(fields[3]), fields[4]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public ProductList getProductList() {
         return productList;
     }
