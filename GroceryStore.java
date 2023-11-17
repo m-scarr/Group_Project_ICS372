@@ -68,9 +68,18 @@ public class GroceryStore {
 
     public void listMembers() {
         //10) List all members. List name, id, and address of each member
-        System.out.printf(" %-20s | %-10s | %-50s\n", "Member Name", "Member ID", "Address" );
-        for (int i = 0; i < members.size(); i++) {
-            System.out.printf(" %-20s | %-10s | %-50s\n", members.get(i).getName(), members.get(i).id, members.get(i).getAddress());
+        System.out.println("===================================================");
+        System.out.println("Members");
+        System.out.println("===================================================");
+        for (Member member : members) {
+            System.out.println("ID: " +  member.id);
+            System.out.println("Name: " + member.getName());
+            System.out.println("Address: " + member.getAddress());
+            System.out.println("---------------------------------------------------");
+        }
+        char choice = Input.getChar("Press y to list all members again or any other key to return to the main menu: ");
+        if (choice == 'y' || choice == 'Y') {
+            listMembers();
         }
     }
 
