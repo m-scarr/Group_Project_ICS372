@@ -77,7 +77,7 @@ public class CommandLineInterface {
             int choice = -1;
             while (choice < 1 || choice >15) {
                 choice = Input.getInt("Enter your choice: ");
-                if (choice < 1 && choice >15) {
+                if (choice < 1 || choice >15) {
                     System.out.println("Invalid Entry, choose a number between 1 and 15");
                 }
             }
