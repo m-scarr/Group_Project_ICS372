@@ -1,6 +1,5 @@
 public class ProductSupply {
     public final int id;
-    private static int count = 0;
     private String name;
     private double price;
     private int quantity;
@@ -8,8 +7,7 @@ public class ProductSupply {
     private boolean reorder = false;
 
     public ProductSupply(String name, double price, int quantity, int minReorderQuantity) {
-        ProductSupply.count += 1;
-        this.id = ProductSupply.count;
+        this.id = GroceryStore.getInstance().getId("productSupply");
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -80,8 +78,7 @@ public class ProductSupply {
             if (reorder) {
                 ProductList productList = new ProductList();
                 productList.add(this, this.minReorderQuantity * 2);
-                Shipment newShipment = new Shipment(productList);
-                //GroceryStore.getInstance().receiveShipment(newShipment);
+                new Shipment(productList);
             }
         }
     }

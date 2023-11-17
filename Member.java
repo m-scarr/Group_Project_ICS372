@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Member {
-    private static int count = 0;
     public final int id;
     private String firstName;
     private String lastName;
@@ -16,8 +15,7 @@ public class Member {
     private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
     public Member(String firstName,String lastName, String address, String city, String state,String zip, String phoneNumber) {
-        Member.count += 1;
-        id = Member.count;
+        id = GroceryStore.getInstance().getId("member");
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -93,7 +91,7 @@ public class Member {
     }
 
     public String getName() {
-        return firstName + lastName;
+        return firstName + " " + lastName;
     }
     public String getAddress() {
         return address + ", " + city + ", " + state + ", " + zip;

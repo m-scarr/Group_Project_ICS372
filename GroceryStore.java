@@ -3,6 +3,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class GroceryStore {
+    private static int memberIdCount = 0;
+    private static int productSupplyIdCount = 0;
+    private static int transactionIdCount = 0;
+    private static int shipmentIdCount = 0;
     private static GroceryStore instance = new GroceryStore();
     public static final double currentMembershipFee = 20;
     private ArrayList<ProductSupply> productSupplies = new ArrayList<ProductSupply>();
@@ -25,9 +29,25 @@ public class GroceryStore {
         String zip = Input.getString("Please enter the zip: ");
         String phone = Input.getString("Please enter the phone number: ");
         new Member(fName, lName, address, city, state, zip, phone);
-        char choice = Input.getChar("Registration successful!\nPress y to register another member or any other key to return to the main menu.");
+        char choice = Input.getChar("Registration successful!\nPress y to register another member or any other key to return to the main menu: ");
         if (choice == 'y' || choice == 'Y') {
             enrollMember();
+        }
+    }
+
+    public int getId(String type) {
+        if (type.equals("member")) {
+            memberIdCount += 1;
+            return memberIdCount;
+        } else if (type.equals("productSupply")) {
+            productSupplyIdCount += 1;
+            return productSupplyIdCount;
+        } else if (type.equals("shipment")) {
+            shipmentIdCount += 1;
+            return shipmentIdCount;
+        } else {
+            transactionIdCount += 1;
+            return transactionIdCount;
         }
     }
 
@@ -40,7 +60,7 @@ public class GroceryStore {
             }
         }
         members.remove(member);
-        char choice = Input.getChar("Removal successful.\nPress y to remove another member or any other key to return to the main menu.");
+        char choice = Input.getChar("Removal successful.\nPress y to remove another member or any other key to return to the main menu: ");
         if (choice == 'y' || choice == 'Y') {
             removeMember();
         }
@@ -48,6 +68,10 @@ public class GroceryStore {
 
     public void listMembers() {
         //10) List all members. List name, id, and address of each member
+        System.out.printf(" %-20s | %-10s | %-50s\n", "Member Name", "Member ID", "Address" );
+        for (int i = 0; i < members.size(); i++) {
+            System.out.printf(" %-20s | %-10s | %-50s\n", members.get(i).getName(), members.get(i).id, members.get(i).getAddress());
+        }
     }
 
     public void changeProductPrice() {
@@ -60,7 +84,7 @@ public class GroceryStore {
         }
         double newPrice = Input.getDouble("Enter a new price for " + product.getName() + ": ");
         product.setPrice(newPrice);
-        char choice = Input.getChar("Product Name: "+product.getName() +" | New Price: " +product.getPrice() + "\nChange successful.\nPress y to change another price or any other key to return to the main menu.");
+        char choice = Input.getChar("Product Name: " + product.getName() +" | New Price: " + product.getPrice() + "\nChange successful.\nPress y to change another price or any other key to return to the main menu: ");
         if (choice == 'y' || choice == 'Y') {
             changeProductPrice();
         }
@@ -81,7 +105,8 @@ public class GroceryStore {
         }
         ArrayList<Transaction> results = member.getTransactions(startDate, endDate);
         for (int i = 0; i < results.size(); i++) {
-            System.out.println(results.get(i));
+            results.get(i).print();
+            System.out.println("----------");
         }
         char choice = Input.getChar("Press y to look at more member transactions or anything else to return to the main menu: ");
         if (choice == 'y' || choice == 'Y') {
@@ -214,7 +239,7 @@ public class GroceryStore {
         char choice = Input.getChar("Press y to finish the transaction or any other key to void it and return to the main menu: ");
         if (choice == 'y' || choice == 'Y') {
             Transaction newTransaction = ((member == null) ?new Transaction(cart):new Transaction(cart, member));
-            System.out.println(newTransaction);
+            newTransaction.print();
         }
     }
 
@@ -222,7 +247,7 @@ public class GroceryStore {
         char choice = 'y';
         int i = 0;
         while (shipments.size() > 0 && i < shipments.size() && choice != 'n' && choice != 'N') {
-            System.out.println(shipments.get(i));
+            shipments.get(i).print();
             choice = Input.getChar("Press Y to process this shipment, N to return to the main menu, or any other key to view the next shipment: ");
             if (choice == 'y' || choice == 'Y') {
                 processShipment(shipments.get(i));
@@ -253,23 +278,6 @@ public class GroceryStore {
         return (i < productSupplies.size() ? productSupplies.get(i) : null);
     }
 
-    /*public Transaction findTransactionById(int id) {
-        int i = 0;
-        while (i < transactions.size() && transactions.get(i).id != id) {
-            i++;
-        }
-        return (i < transactions.size() ? transactions.get(i) : null);
-    }
-
-    public Shipment findShipmentById(int id) {
-        int i = 0;
-        while (i < shipments.size() && shipments.get(i).id != id) {
-            i++;
-        }
-        return (i < shipments.size() ? shipments.get(i) : null);
-    }*/
-
-
     private ArrayList<Member> searchMembersByLastName(String lastName) {
         ArrayList<Member> foundMembers = new ArrayList<Member>();
         for (int i = 0; i < members.size(); i++) {
@@ -293,7 +301,7 @@ public class GroceryStore {
         shipments.add(newShipment);
     }
 
-    public void processShipment(Shipment shipment) {
+    private void processShipment(Shipment shipment) {
         shipment.process();
         for (int i = 0; i < productSupplies.size(); i++) {
             productSupplies.get(i).addToQuantity(shipment.getProductList().getQuantityOfProduct(productSupplies.get(i)));
@@ -322,19 +330,19 @@ public class GroceryStore {
         String saveFile = Input.getString("Please enter a file name: ");
         try {
             FileWriter writer = new FileWriter(saveFile);
-            writer.write("MEMBERS\n");
+            writer.write("MEMBERS-" + memberIdCount + "\n");
             for (int i = 0; i < members.size(); i++) {
                 writer.write(members.get(i).getSaveString() + "\n");
             }
-            writer.write("PRODUCTS\n");
+            writer.write("PRODUCTS-" + productSupplyIdCount + "\n");
             for (int i = 0; i < productSupplies.size(); i++) {
                 writer.write(productSupplies.get(i).getSaveString() + "\n");
             }
-            writer.write("SHIPMENTS\n");
+            writer.write("SHIPMENTS-" + shipmentIdCount + "\n");
             for (int i = 0; i < shipments.size(); i++) {
                 writer.write(shipments.get(i).getSaveString() + "\n");
             }
-            writer.write("TRANSACTIONS\n");
+            writer.write("TRANSACTIONS-" + transactionIdCount + "\n");
             for (int i = 0; i < transactions.size(); i++) {
                 writer.write(transactions.get(i).getSaveString() + "\n");
             }
@@ -355,20 +363,37 @@ public class GroceryStore {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(loadFile.getName()));
             line = reader.readLine();
-            while (!line.equals("PRODUCTS")) {
+            memberIdCount = Integer.parseInt(line.split("-")[1]);
+            System.out.println(memberIdCount);
+            while (!line.contains("PRODUCTS-")) {
                 line = reader.readLine();
-                Member.load(line);
-                System.out.println(line);
+                if (!line.contains("PRODUCTS-")) {
+                    Member.load(line);
+                    System.out.println(line);
+                } else {
+                    productSupplyIdCount = Integer.parseInt(line.split("-")[1]);
+                    System.out.println(productSupplyIdCount);
+                }
             }
-            while (!line.equals("SHIPMENTS")) {
+            while (!line.contains("SHIPMENTS-")) {
                 line = reader.readLine();
-                ProductSupply.load(line);
-                System.out.println(line);
+                if (!line.contains("SHIPMENTS-")) {
+                    ProductSupply.load(line);
+                    System.out.println(line);
+                } else {
+                    shipmentIdCount = Integer.parseInt(line.split("-")[1]);
+                    System.out.println(shipmentIdCount);
+                }
             }
-            while (!line.equals("TRANSACTIONS")) {
+            while (!line.contains("TRANSACTIONS-")) {
                 line = reader.readLine();
-                Shipment.load(line);
-                System.out.println(line);
+                if (!line.contains("TRANSACTIONS-")) {
+                    Shipment.load(line);
+                    System.out.println(line);
+                } else {
+                    transactionIdCount = Integer.parseInt(line.split("-")[1]);
+                    System.out.println(transactionIdCount);
+                }
             }
             while (line!=null && !line.isEmpty()) {
                 line = reader.readLine();

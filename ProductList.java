@@ -8,6 +8,9 @@ public class ProductList {
         this.content = content;
     }
 
+    public int size() { return content.size(); }
+    public Product get(int i) { return content.get(i); }
+
     public static ProductList load(String data) {
         String[] products = data.substring(1, data.length() - 1).split(",");
         int productId;
@@ -55,10 +58,6 @@ public class ProductList {
             }
         }
         return 0;
-    }
-
-    public Product get(int i) {
-        return content.get(i);
     }
 
     public double getTotal() {

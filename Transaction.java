@@ -1,7 +1,6 @@
 import java.util.Date;
 
 public class Transaction {
-    private static int count = 0;
     public final int id;
     private ProductList productList;
     public final Date date;
@@ -9,8 +8,7 @@ public class Transaction {
     public final double total;
     private Member member = null;
     public Transaction(ProductList productList) {
-        Transaction.count += 1;
-        id = Transaction.count;
+        id = GroceryStore.getInstance().getId("transaction");
         this.productList = productList;
         total = this.productList.getTotal() * (1 + Transaction.tax);
         this.date = new Date();
@@ -65,13 +63,20 @@ public class Transaction {
         return productList;
     }
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "productList=" + productList +
-                ", date=" + date +
-                ", total=" + total +
-                ", member=" + member +
-                '}';
+    public void print() {
+        System.out.println("Date: " + date);
+        if (member != null) {
+            System.out.println("Member ID: " + member.id);
+            System.out.println("Member Name: " + member.getFirstName() + " " + member.getLastName());
+        } else {
+            System.out.println("-Non-member-");
+        }
+        System.out.printf("%-20s | %-10s | %-20s | %-12s\n", "Name", "Quantity", "Individual Price", "Total Price" );
+        for (int i = 0; i < productList.size(); i++) {
+                System.out.printf("%-20s | %-10s | %-20s | %-12s\n", productList.get(i).productSupply.getName(),
+                        productList.get(i).getQuantity(), productList.get(i).getPrice(),
+                        productList.get(i).getQuantity() * productList.get(i).getPrice());
+        }
+        System.out.println("Total: " + productList.getTotal());
     }
 }

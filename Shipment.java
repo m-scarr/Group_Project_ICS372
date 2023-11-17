@@ -1,16 +1,13 @@
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Shipment {
-    private static int count = 0;
     public final int id;
     private ProductList productList;
     private final Date dateOrdered;
     private Date dateProcessed = null;
 
     public Shipment(ProductList productList) {
-        Shipment.count +=1;
-        this.id = Shipment.count;
+        this.id = GroceryStore.getInstance().getId("shipment");
         this.productList = productList;
         this.dateOrdered = new Date();
         GroceryStore.getInstance().addShipment(this);
@@ -59,14 +56,10 @@ public class Shipment {
         return productList;
     }
 
-    /*@Override
-    public String toString() {
-        return "Shipment{" +
-                "id=" + id +
-                ", productList=" + productList +
-                ", dateOrdered=" + dateOrdered +
-                ", dateReceived=" + dateReceived +
-                ", received=" + received +
-                '}';
-    }*/
+    public void print() {
+        System.out.println("Product ID: " + productList.get(0).productSupply.id);
+        System.out.println("Product Name: " + productList.get(0).productSupply.getName());
+        System.out.println("Shipment Quantity: " + productList.get(0).getQuantity());
+        System.out.println("New Quantity (when shipment is processed): " + (productList.get(0).productSupply.getQuantity() + productList.get(0).getQuantity()));
+    }
 }
