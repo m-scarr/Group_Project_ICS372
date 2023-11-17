@@ -75,7 +75,7 @@ public class CommandLineInterface {
             System.out.println("14. Load members, products, transactions and shipments");
             System.out.println("15. Exit");
             int choice = -1;
-            while (choice < 1 && choice >15) {
+            while (choice < 1 || choice >15) {
                 choice = Input.getInt("Enter your choice: ");
                 if (choice < 1 && choice >15) {
                     System.out.println("Invalid Entry, choose a number between 1 and 15");
